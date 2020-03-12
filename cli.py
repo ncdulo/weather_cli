@@ -22,7 +22,7 @@ class ApiKey(click.ParamType):
         return value
 
 
-def current_weather(location, api_key):
+def current_weather(location, api_key, units):
     url = 'http://api.openweathermap.org/data/2.5/weather'
 
     query_params = {
@@ -30,7 +30,7 @@ def current_weather(location, api_key):
             #'id': location,
             # Otherwise, we are using City names, 'q' parameter
             'q': location,
-            'units': 'imperial',
+            'units': units,
             'appid': api_key,
         }
 
@@ -103,33 +103,42 @@ def config(ctx):
 
 @main.command()
 @click.argument('location')
-@click.option('--output',
-        type=click.Choice(['temp_only', 'short', 'full'],
+@click.option('--units', '-u',
+        type=click.Choice(['imperial', 'metric', 'standard'],
             case_sensitive=False),
-        default='full',
-        help='Amount of weather data to output')
+        default='imperial',
+        help='Units for displayed data')
+@click.option('--conditions', '-C', is_flag=True,
+        help='Display current conditions text')
+@click.option('--temperature', '-t', is_flag=True,
+        help='Show current temperature (includes high/low)')
+@click.option('--humidity', '-h', is_flag=True,
+        help='Show current relative humidity')
 @click.pass_context
-def current(ctx, location, output):
+def current(ctx, location, units, conditions, temperature, humidity):
     '''
     Show the current weather for a location using OpenWeatherMap data.
     '''
     api_key = ctx.obj['api_key']
 
-    weather = current_weather(location, api_key)
+    weather = current_weather(location, api_key, units)
+    current_conditions = ''
 
-    if output == 'full':
-        current_conditions = \
-                weather['weather'][0]['description'] + \
-                ', ↑' + str(weather['main']['temp_max']) + '°F, ' + \
+    if conditions:
+        current_conditions = weather['weather'][0]['description'] + ', '
+
+    # TODO: Make sure proper units displayed alongside their value
+
+    if temperature:
+        current_conditions += \
+                '↑' + str(weather['main']['temp_max']) + '°F, ' + \
                 str(weather['main']['temp']) + '°F, ↓' + \
-                str(weather['main']['temp_min']) + '°F, ' + \
-                str(weather['main']['humidity']) + '%RH'
+                str(weather['main']['temp_min']) + '°F, '
 
-        print(f'Current conditions for {location}: {current_conditions}')
-    elif output == 'short':
-        print('short output')
-    elif output == 'temp_only':
-        print('temperature only')
+    if humidity:
+        current_conditions += str(weather['main']['humidity']) + '%RH'
+
+    print(f'Current conditions for {location}: {current_conditions}')
 
 if __name__ == '__main__':
     main()
