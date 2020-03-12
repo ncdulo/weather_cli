@@ -44,14 +44,8 @@ def current_weather(location, api_key):
     #        str(response.json()['main']['temp_min']) + '°F Low) at ' +\
     #        str(response.json()['main']['humidity']) + '% humidity'
 
-    current_conditions = \
-            response.json()['weather'][0]['description'] + \
-            ', ↑' + str(response.json()['main']['temp_max']) + '°F, ' + \
-            str(response.json()['main']['temp']) + '°F, ↓' + \
-            str(response.json()['main']['temp_min']) + '°F, ' + \
-            str(response.json()['main']['humidity']) + '%RH'
 
-    return current_conditions
+    return response.json()
 
 
 @click.group()
@@ -109,15 +103,33 @@ def config(ctx):
 
 @main.command()
 @click.argument('location')
+@click.option('--output',
+        type=click.Choice(['temp_only', 'short', 'full'],
+            case_sensitive=False),
+        default='full',
+        help='Amount of weather data to output')
 @click.pass_context
-def current(ctx, location):
+def current(ctx, location, output):
     '''
     Show the current weather for a location using OpenWeatherMap data.
     '''
     api_key = ctx.obj['api_key']
 
     weather = current_weather(location, api_key)
-    print(f'Current conditions for  {location}: {weather}.')
+
+    if output == 'full':
+        current_conditions = \
+                weather['weather'][0]['description'] + \
+                ', ↑' + str(weather['main']['temp_max']) + '°F, ' + \
+                str(weather['main']['temp']) + '°F, ↓' + \
+                str(weather['main']['temp_min']) + '°F, ' + \
+                str(weather['main']['humidity']) + '%RH'
+
+        print(f'Current conditions for {location}: {current_conditions}')
+    elif output == 'short':
+        print('short output')
+    elif output == 'temp_only':
+        print('temperature only')
 
 if __name__ == '__main__':
     main()
