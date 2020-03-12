@@ -130,10 +130,16 @@ def current(ctx, location, units, conditions, temperature, humidity):
     # TODO: Make sure proper units displayed alongside their value
 
     if temperature:
-        current_conditions += \
-                '↑' + str(weather['main']['temp_max']) + '°F, ' + \
-                str(weather['main']['temp']) + '°F, ↓' + \
-                str(weather['main']['temp_min']) + '°F, '
+        temp_units = {
+                'imperial': 'F',
+                'metric': 'C',
+                'standard': 'K',
+            }
+
+        current_conditions += '↑' + \
+                str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
+                str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
+                str(weather['main']['temp_min']) + f'°{temp_units[units]}, '
 
     if humidity:
         current_conditions += str(weather['main']['humidity']) + '%RH'
