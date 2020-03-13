@@ -108,6 +108,8 @@ def config(ctx):
             case_sensitive=False),
         default='imperial',
         help='Units for displayed data')
+@click.option('--pretty', '-p', is_flag=True, default=False,
+        help='Enable extra output text, and formatting')
 @click.option('--conditions', '-C', is_flag=True,
         help='Display current conditions text')
 @click.option('--temperature', '-t', is_flag=True,
@@ -115,7 +117,7 @@ def config(ctx):
 @click.option('--humidity', '-h', is_flag=True,
         help='Show current relative humidity')
 @click.pass_context
-def current(ctx, location, units, conditions, temperature, humidity):
+def current(ctx, location, units, pretty, conditions, temperature, humidity):
     '''
     Show the current weather for a location using OpenWeatherMap data.
     '''
@@ -124,8 +126,11 @@ def current(ctx, location, units, conditions, temperature, humidity):
     weather = current_weather(location, api_key, units)
     current_conditions = ''
 
+    if pretty:
+        current_conditions += f'Current conditions for {location}: '
+
     if conditions:
-        current_conditions = weather['weather'][0]['description'] + ', '
+        current_conditions += weather['weather'][0]['description'] + ', '
 
     # TODO: Make sure proper units displayed alongside their value
 
@@ -144,7 +149,7 @@ def current(ctx, location, units, conditions, temperature, humidity):
     if humidity:
         current_conditions += str(weather['main']['humidity']) + '%RH'
 
-    print(f'Current conditions for {location}: {current_conditions}')
+    print(current_conditions)
 
 if __name__ == '__main__':
     main()
