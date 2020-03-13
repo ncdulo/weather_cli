@@ -178,8 +178,9 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
 
         # TODO: Wind degrees should display a direction, not specific
         # degrees. Such as 'W' instead of '270°'
-        current_conditions += 'winds ' + \
-                str(weather['wind']['deg']) + '° at ' + \
+
+        wind_cardinal = degrees_to_cardinal(weather['wind']['deg'])
+        current_conditions += f'winds {wind_cardinal} at ' + \
                 str(weather['wind']['speed']) + f'{wind_units[units]}'
 
     print(current_conditions)
