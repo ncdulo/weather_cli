@@ -39,21 +39,13 @@ def current_weather(location, api_key, units):
             # If using City ID, set the 'id' parameter
             #'id': location,
             # Otherwise, we are using City names, 'q' parameter
+            # TODO: Make the above into a flag so the user can choose
+            # between City ID or City Name
             'q': location,
             'units': units,
             'appid': api_key,
         }
-
     response = requests.get(url, params=query_params)
-
-    #current_conditions =  response.json()['weather'][0]['description'] + \
-    #        ' at ' + \
-    #        str(response.json()['main']['temp']) + '°F' + \
-    #        ' (' + \
-    #        str(response.json()['main']['temp_max']) + '°F High, ' + \
-    #        str(response.json()['main']['temp_min']) + '°F Low) at ' +\
-    #        str(response.json()['main']['humidity']) + '% humidity'
-
 
     return response.json()
 
@@ -116,7 +108,6 @@ def config(ctx):
 #  - visibility
 #  - data updated time
 #  - cloud cover
-#  - wind speed/direction
 @main.command()
 @click.argument('location')
 @click.option('--units', '-u',
@@ -152,15 +143,12 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
         current_conditions += \
                 weather['weather'][0]['description'].capitalize() + ', '
 
-    # TODO: Make sure proper units displayed alongside their value
-
     if temperature:
         temp_units = {
                 'imperial': 'F',
                 'metric': 'C',
                 'standard': 'K',
             }
-
         current_conditions += '↑' + \
                 str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
                 str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
@@ -175,10 +163,6 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
                 'metric': 'm/s',
                 'standard': 'm/s',
             }
-
-        # TODO: Wind degrees should display a direction, not specific
-        # degrees. Such as 'W' instead of '270°'
-
         wind_cardinal = degrees_to_cardinal(weather['wind']['deg'])
         current_conditions += f'winds {wind_cardinal} at ' + \
                 str(weather['wind']['speed']) + f'{wind_units[units]}'
