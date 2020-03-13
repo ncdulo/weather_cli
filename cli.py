@@ -136,7 +136,8 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity):
         current_conditions += f'Current conditions for {location}: '
 
     if conditions:
-        current_conditions += weather['weather'][0]['description'] + ', '
+        current_conditions += \
+                weather['weather'][0]['description'].capitalize() + ', '
 
     # TODO: Make sure proper units displayed alongside their value
 
