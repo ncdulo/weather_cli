@@ -21,6 +21,16 @@ class ApiKey(click.ParamType):
 
         return value
 
+def degrees_to_cardinal(degrees):
+    '''
+    Return the cardinal direction representing a given 'degrees'
+    '''
+    cardinal = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
+                'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
+    cardinal_len = len(cardinal)
+    ix = round(degrees / (360.0 / cardinal_len))
+    return cardinal[ix % cardinal_len]
+
 
 def current_weather(location, api_key, units):
     url = 'http://api.openweathermap.org/data/2.5/weather'
