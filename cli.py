@@ -100,7 +100,13 @@ def config(ctx):
     with open(config_file, 'w') as cfg:
         cfg.write(api_key)
 
-
+# TODO: More flags to add -- not necessarily all, but these look good
+#  - sunrise/sunset
+#  - air pressure
+#  - visibility
+#  - data updated time
+#  - cloud cover
+#  - wind speed/direction
 @main.command()
 @click.argument('location')
 @click.option('--units', '-u',
