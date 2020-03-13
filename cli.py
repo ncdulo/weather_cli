@@ -122,8 +122,11 @@ def config(ctx):
         help='Show current temperature (includes high/low)')
 @click.option('--humidity', '-h', is_flag=True,
         help='Show current relative humidity')
+@click.option('--wind', '-w', is_flag=True,
+        help='Show current wind speed and direction')
 @click.pass_context
-def current(ctx, location, units, pretty, conditions, temperature, humidity):
+def current(ctx, location, units, pretty, conditions, temperature, humidity,\
+        wind):
     '''
     Show the current weather for a location using OpenWeatherMap data.
     '''
@@ -154,7 +157,20 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity):
                 str(weather['main']['temp_min']) + f'°{temp_units[units]}, '
 
     if humidity:
-        current_conditions += str(weather['main']['humidity']) + '%RH'
+        current_conditions += str(weather['main']['humidity']) + '%RH, '
+
+    if wind:
+        wind_units = {
+                'imperial': 'mph',
+                'metric': 'm/s',
+                'standard': 'm/s',
+            }
+
+        # TODO: Wind degrees should display a direction, not specific
+        # degrees. Such as 'W' instead of '270°'
+        current_conditions += 'winds ' + \
+                str(weather['wind']['deg']) + '° at ' + \
+                str(weather['wind']['speed']) + f'{wind_units[units]}'
 
     print(current_conditions)
 
