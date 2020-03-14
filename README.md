@@ -52,7 +52,7 @@ cat 'API_KEY' > ~/.weather.cfg
 
 # Optional, install symlink to executable within your $PATH
 # ~/.local/bin must be in your system $PATH
-ln -s .env/bin/weather ~/.local/bin/weather
+ln -s `pwd`/.env/bin/weather ~/.local/bin/weather
 # With the symlink in place, `weather` may be called from any location
 # without typing the full path to the executable
 ```
