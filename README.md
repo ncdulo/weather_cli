@@ -57,10 +57,10 @@ pip install .
 # Deactivate the virtual environment
 deactivate
 
-# Write your API key to configuration file
-cat 'API_KEY' > ~/.weather.cfg
-# -- or --
-.env/bin/weather --api-key API_KEY config
+# Write your API key to configuration file interactively (recommended)
+.env/bin/weather config
+# -- or as a single command --
+.env/bin/weather --api-key YOUR_API_KEY config
 
 # Check use instructions
 .env/bin/weather --help
