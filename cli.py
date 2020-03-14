@@ -47,8 +47,11 @@ def current_weather(location, api_key, units):
         }
     response = requests.get(url, params=query_params)
 
-    return response.json()
+    # Check the HTTP response. If we receive a 4XX or 5XX error, raise
+    # an exception so it may be dealt with.
+    response.raise_for_status()
 
+    return response.json()
 
 @click.group()
 @click.option(
@@ -133,7 +136,18 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
     '''
     api_key = ctx.obj['api_key']
 
-    weather = current_weather(location, api_key, units)
+    try:
+        weather = current_weather(location, api_key, units)
+    except requests.HTTPError as error:
+        print(f'HTTP Error!\n{error}')
+        return
+    except requests.ConnectionError as error:
+        print(f'Connection Error!\n{error}')
+        return
+    except requests.Timeout as error:
+        print(f'Timed Out!\n{error}')
+        return
+
     current_conditions = ''
 
     if pretty:
