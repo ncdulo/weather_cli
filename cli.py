@@ -154,32 +154,39 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
         current_conditions += f'Current conditions for {location}: '
 
     if conditions:
-        current_conditions += \
-                weather['weather'][0]['description'].capitalize() + ', '
+        if 'weather' in weather:
+            current_conditions += \
+                    weather['weather'][0]['description'].capitalize() + ', '
 
     if temperature:
-        temp_units = {
-                'imperial': 'F',
-                'metric': 'C',
-                'standard': 'K',
-            }
-        current_conditions += '↑' + \
-                str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
-                str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
-                str(weather['main']['temp_min']) + f'°{temp_units[units]}, '
+        if 'temp_max' in weather['main'] and \
+                'temp_min' in weather['main'] and \
+                'temp' in weather['main']:
+            temp_units = {
+                    'imperial': 'F',
+                    'metric': 'C',
+                    'standard': 'K',
+                }
+            current_conditions += '↑' + \
+                    str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
+                    str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
+                    str(weather['main']['temp_min']) + f'°{temp_units[units]}, '
 
     if humidity:
-        current_conditions += str(weather['main']['humidity']) + '%RH, '
+        if 'humidity' in weather['main']:
+            current_conditions += str(weather['main']['humidity']) + '%RH, '
 
     if wind:
-        wind_units = {
-                'imperial': 'mph',
-                'metric': 'm/s',
-                'standard': 'm/s',
-            }
-        wind_cardinal = degrees_to_cardinal(weather['wind']['deg'])
-        current_conditions += f'winds {wind_cardinal} at ' + \
-                str(weather['wind']['speed']) + f'{wind_units[units]}'
+        if 'wind' in weather:
+            if 'speed' in weather['wind'] and 'deg' in weather['wind']:
+                wind_units = {
+                        'imperial': 'mph',
+                        'metric': 'm/s',
+                        'standard': 'm/s',
+                    }
+                wind_cardinal = degrees_to_cardinal(weather['wind']['deg'])
+                current_conditions += f'winds {wind_cardinal} at ' + \
+                        str(weather['wind']['speed']) + f'{wind_units[units]}'
 
     print(current_conditions)
 
