@@ -114,9 +114,9 @@ def config(ctx):
 @main.command()
 @click.argument('location')
 @click.option('--units', '-u',
-        type=click.Choice(['imperial', 'metric', 'standard'],
+        type=click.Choice(['standard', 'metric', 'imperial'],
             case_sensitive=False),
-        default='imperial',
+        default='standard',
         help='Units for displayed data')
 @click.option('--pretty', '-p', is_flag=True, default=False,
         help='Enable extra output text, and formatting')
