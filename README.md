@@ -11,6 +11,23 @@ The start of it all:
   - https://dbader.org/blog/python-commandline-tools-with-click
   - https://dbader.org/blog/mastering-click-advanced-python-command-line-apps
 
+# API Key
+This program requires a *free* OpenWeatherMap API Key. Once you have your key,
+it may be passed into the program by either a configuration file or a command
+line argument. It is recommended to run `weather` in interactive mode and allow
+it to save the API key to configuration file. Using interactive mode will prevent
+you from entering your key into the terminal, which would leave it sitting in
+your history file for any with access to see.
+
+```bash
+# Install API key interactively
+$ weather config
+Please enter your OpenWeatherMap API key: YOUR_API_KEY [return]
+# Install API key from command line
+$ weather --api-key YOUR_API_KEY config
+```
+Obtain your API key here: https://openweathermap.org/appid
+
 # Installation
 The install and use should be fairly simple. I don't totally know what I'm
 doing with `setuptools` but this works, and has been verified in local clones
