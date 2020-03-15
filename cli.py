@@ -4,6 +4,7 @@ import os
 import re
 import click
 import requests
+from string import Template
 
 
 class ApiKey(click.ParamType):
@@ -118,7 +119,10 @@ def config(ctx):
             case_sensitive=False),
         default='standard',
         help='Units for displayed data')
-@click.option('--pretty', '-p', is_flag=True, default=False,
+@click.option('--pretty', '-p',
+        type=click.Choice(['short', 'long', 'verbose',],
+            case_sensitive=False),
+        default='short',
         help='Enable extra output text, and formatting')
 @click.option('--conditions', '-C', is_flag=True,
         help='Display current conditions text')
@@ -148,15 +152,35 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
         print(f'Timed Out!\n{error}')
         return
 
-    current_conditions = ''
+    current_conditions = {'location': location,}
 
-    if pretty:
-        current_conditions += f'Current conditions for {location}: '
+    # Choose an output template based on the chosen option
+    if pretty == 'short':
+        # Default, short & to the point
+        template = Template(
+'''$conditions $temperature $humidity $wind'''
+            )
+    elif pretty == 'long':
+        # Longer form, additional formatting
+        template = Template(
+'''Current conditions for ${location}:
+    $conditions $temperature $humidity $wind'''
+            )
+    elif pretty == 'verbose':
+        # Describe the full output
+        # TODO: Pretty print into a table!
+        template = Template(
+'''Location: $location
+Conditions: $conditions
+Temperature (High, Current, Low): $temperature
+Relative Humidity: $humidity
+Wind (Direction, Speed): $wind'''
+            )
 
     if conditions:
         if 'weather' in weather:
-            current_conditions += \
-                    weather['weather'][0]['description'].capitalize() + ', '
+            current_conditions['conditions'] = \
+                    weather['weather'][0]['description'].capitalize()
 
     if temperature:
         if 'temp_max' in weather['main'] and \
@@ -167,14 +191,15 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
                     'metric': 'C',
                     'standard': 'K',
                 }
-            current_conditions += '↑' + \
+            current_conditions['temperature'] = '↑' + \
                     str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
                     str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
-                    str(weather['main']['temp_min']) + f'°{temp_units[units]}, '
+                    str(weather['main']['temp_min']) + f'°{temp_units[units]}'
 
     if humidity:
         if 'humidity' in weather['main']:
-            current_conditions += str(weather['main']['humidity']) + '%RH, '
+            current_conditions['humidity'] = \
+                    str(weather['main']['humidity']) + '%RH'
 
     if wind:
         if 'wind' in weather:
@@ -185,10 +210,14 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
                         'standard': 'm/s',
                     }
                 wind_cardinal = degrees_to_cardinal(weather['wind']['deg'])
-                current_conditions += f'winds {wind_cardinal} at ' + \
+                current_conditions['wind'] = \
+                        f'winds {wind_cardinal} at ' + \
                         str(weather['wind']['speed']) + f'{wind_units[units]}'
 
-    print(current_conditions)
+    # Pass our conditions dictionary into the 'pretty' template and
+    # substitue our weather data in for display.
+    output_text = template.safe_substitute(**current_conditions)
+    print(output_text)
 
 if __name__ == '__main__':
     main()
