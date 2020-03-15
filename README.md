@@ -11,6 +11,23 @@ The start of it all:
   - https://dbader.org/blog/python-commandline-tools-with-click
   - https://dbader.org/blog/mastering-click-advanced-python-command-line-apps
 
+# Demo
+Short series of demo commands to show off a bit. Why not. The arguments can be specified in a variety of ways, as can be seen in the commands being entered. Full documentation for the available arguments can be found by passing the `--help` argument as noted in the installation instructions.
+```
+$ weather current Mars -Cthw --units imperial
+Light rain | ↑34°F, 32.76°F, ↓32°F | 87%RH | NNW at 3.36mph
+$ weather current Mars -Cthw -u standard --pretty long
+Current conditions for Mars are
+    Light rain at ↑274.26°K, 273.5°K, ↓272.59°K
+      87%RH, winds NNW at 1.5m/s
+$ weather current Mars -Cthw --units=metric -p verbose              
+Location: Mars
+Conditions: Light rain
+Temperature (High, Current, Low): ↑1.11°C, 0.42°C, ↓0°C
+Relative Humidity: 87%RH
+Wind (Direction, Speed): NNW, 1.5m/s
+```
+
 # API Key
 This program requires a *free* OpenWeatherMap API Key. Once you have your key,
 it may be passed into the program by either a configuration file or a command
