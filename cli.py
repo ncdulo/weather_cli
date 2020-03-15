@@ -158,13 +158,13 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
     if pretty == 'short':
         # Default, short & to the point
         template = Template(
-'''$conditions $temperature $humidity $wind'''
+'''$conditions $temperature $humidity $wind_dir at $wind_speed'''
             )
     elif pretty == 'long':
         # Longer form, additional formatting
         template = Template(
 '''Current conditions for ${location}:
-    $conditions $temperature $humidity $wind'''
+    $conditions $temperature $humidity $wind_dir at $wind_speed'''
             )
     elif pretty == 'verbose':
         # Describe the full output
@@ -174,7 +174,7 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
 Conditions: $conditions
 Temperature (High, Current, Low): $temperature
 Relative Humidity: $humidity
-Wind (Direction, Speed): $wind'''
+Wind (Direction, Speed): $wind_dir, $wind_speed'''
             )
 
     if conditions:
@@ -210,14 +210,15 @@ Wind (Direction, Speed): $wind'''
                         'standard': 'm/s',
                     }
                 wind_cardinal = degrees_to_cardinal(weather['wind']['deg'])
-                current_conditions['wind'] = \
-                        f'winds {wind_cardinal} at ' + \
+                current_conditions['wind_dir'] = wind_cardinal
+                current_conditions['wind_speed'] = \
                         str(weather['wind']['speed']) + f'{wind_units[units]}'
 
     # Pass our conditions dictionary into the 'pretty' template and
     # substitue our weather data in for display.
     output_text = template.safe_substitute(**current_conditions)
     print(output_text)
+
 
 if __name__ == '__main__':
     main()
