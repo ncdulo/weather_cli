@@ -20,7 +20,7 @@ $ weather current Mars -Cthw -u standard --pretty long
 Current conditions for Mars are
     Light rain at ↑274.26°K, 273.5°K, ↓272.59°K
       87%RH, winds NNW at 1.5m/s
-$ weather current Mars -Cthw --units=metric -p verbose              
+$ weather current Mars -Cthw --units=metric -p verbose
 Location: Mars
 Conditions: Light rain
 Temperature (High, Current, Low): ↑1.11°C, 0.42°C, ↓0°C
