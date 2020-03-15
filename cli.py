@@ -118,7 +118,10 @@ def config(ctx):
             case_sensitive=False),
         default='standard',
         help='Units for displayed data')
-@click.option('--pretty', '-p', is_flag=True, default=False,
+@click.option('--pretty', '-p',
+        type=click.Choice(['short', 'long', 'verbose',],
+            case_sensitive=False),
+        default='short',
         help='Enable extra output text, and formatting')
 @click.option('--conditions', '-C', is_flag=True,
         help='Display current conditions text')
