@@ -4,6 +4,7 @@ import os
 import re
 import click
 import requests
+from string import Template
 
 
 class ApiKey(click.ParamType):
@@ -151,7 +152,16 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
         print(f'Timed Out!\n{error}')
         return
 
+    # Vestigial code. Probably do not need any longer.
     current_conditions = ''
+
+    # Choose an output template based on the chosen option
+    if pretty == 'short':
+        template = Template('short')
+    elif pretty == 'long':
+        template = Template('long')
+    elif pretty == 'verbose':
+        template = Template('verbose')
 
     if pretty:
         current_conditions += f'Current conditions for {location}: '
@@ -191,6 +201,12 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
                 current_conditions += f'winds {wind_cardinal} at ' + \
                         str(weather['wind']['speed']) + f'{wind_units[units]}'
 
+    # Original output call becomes debug text. Remove this.
+    print(current_conditions)
+
+    # Pass our conditions dictionary into the 'pretty' template and
+    # substitue our weather data in for display.
+    current_conditions = template.safe_substitute()
     print(current_conditions)
 
 if __name__ == '__main__':
