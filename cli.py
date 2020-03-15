@@ -158,13 +158,14 @@ def current(ctx, location, units, pretty, conditions, temperature, humidity,\
     if pretty == 'short':
         # Default, short & to the point
         template = Template(
-'''$conditions $temperature $humidity $wind_dir at $wind_speed'''
+'''$conditions | $temperature | $humidity | $wind_dir at $wind_speed'''
             )
     elif pretty == 'long':
         # Longer form, additional formatting
         template = Template(
-'''Current conditions for ${location}:
-    $conditions $temperature $humidity $wind_dir at $wind_speed'''
+'''Current conditions for ${location} are
+    $conditions at $temperature
+      ${humidity}, winds $wind_dir at $wind_speed'''
             )
     elif pretty == 'verbose':
         # Describe the full output
@@ -191,6 +192,7 @@ Wind (Direction, Speed): $wind_dir, $wind_speed'''
                     'metric': 'C',
                     'standard': 'K',
                 }
+            # TODO: Should we break these values out individually too?
             current_conditions['temperature'] = '↑' + \
                     str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
                     str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
