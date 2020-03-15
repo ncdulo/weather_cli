@@ -182,6 +182,8 @@ Wind (Direction, Speed): $wind_dir, $wind_speed'''
         if 'weather' in weather:
             current_conditions['conditions'] = \
                     weather['weather'][0]['description'].capitalize()
+    else:
+        current_conditions['conditions'] = ''
 
     if temperature:
         if 'temp_max' in weather['main'] and \
@@ -197,11 +199,15 @@ Wind (Direction, Speed): $wind_dir, $wind_speed'''
                     str(weather['main']['temp_max']) + f'°{temp_units[units]}, ' +\
                     str(weather['main']['temp']) + f'°{temp_units[units]}, ↓' + \
                     str(weather['main']['temp_min']) + f'°{temp_units[units]}'
+    else:
+        current_conditions['temperature'] = ''
 
     if humidity:
         if 'humidity' in weather['main']:
             current_conditions['humidity'] = \
                     str(weather['main']['humidity']) + '%RH'
+    else:
+        current_conditions['humidity'] = ''
 
     if wind:
         if 'wind' in weather:
@@ -215,6 +221,9 @@ Wind (Direction, Speed): $wind_dir, $wind_speed'''
                 current_conditions['wind_dir'] = wind_cardinal
                 current_conditions['wind_speed'] = \
                         str(weather['wind']['speed']) + f'{wind_units[units]}'
+    else:
+        current_conditions['wind_dir'] = ''
+        current_conditions['wind_speed'] = ''
 
     # Pass our conditions dictionary into the 'pretty' template and
     # substitue our weather data in for display.
